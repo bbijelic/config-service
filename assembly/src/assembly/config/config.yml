@@ -1,11 +1,25 @@
+# Database configuration
+database:
+  # the name of your JDBC driver
+  driverClass: com.mysql.cj.jdbc.Driver
+  # the username
+  user: ${CONFIG_SERVICE_DB_USER:-root}
+  # the password
+  password: ${CONFIG_SERVICE_DB_PASSWORD:-}
+  # the JDBC URL
+  url: ${CONFIG_SERVICE_DB_URL:-jdbc:mysql://localhost:3306/db}
+  # any properties specific to your JDBC driver:
+  properties:
+    charSet: UTF-8
+
 # Server configuration
 server:
   applicationConnectors:
   - type: http
-    port: ${CONFIG_SERVICE_API_PORT:-8443}
+    port: ${CONFIG_SERVICE_API_PORT:-10443}
   adminConnectors:
   - type: http
-    port: ${CONFIG_SERVICE_ADMIN_PORT:-9443}
+    port: ${CONFIG_SERVICE_ADMIN_PORT:-11443}
   requestLog:
     appenders:
       - type: file
@@ -28,5 +42,3 @@ logging:
       archivedFileCount: ${logging.archive.filecount}
       timeZone: ${logging.timezone}
       logFormat: "${logging.pattern}"
-
-    

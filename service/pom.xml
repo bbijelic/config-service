@@ -16,5 +16,23 @@
     
     <name>Config Service : Service</name>
 	<description>Config Service Service Module</description>
+	
+    <dependencies>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+			<version>5.2.11.Final</version>
+        </dependency>
+        <dependency>
+	        <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>6.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.scottescue</groupId>
+            <artifactId>dropwizard-entitymanager</artifactId>
+            <version>1.0.0-1</version>
+        </dependency>
+	</dependencies>
     
 </project>  
