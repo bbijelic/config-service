@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
-import com.github.bbijelic.service.config.model.Application;
+import com.github.bbijelic.service.config.entity.Application;
 
 /**
  * Application resource
@@ -34,7 +34,7 @@ public class ApplicationResource {
     @POST
     public Response addApplication(
         @NotNull @QueryParam("region") String region, 
-        @Valid Application application, SecurityContext context){
+        @Valid Application application){
             
         return Response.ok().build();
     }
@@ -45,8 +45,7 @@ public class ApplicationResource {
     @GET
     public Response getApplication(
         @NotNull @QueryParam("region") String region, 
-        @QueryParam("name") Optional<String> name, 
-        SecurityContext context){
+        @QueryParam("name") Optional<String> name){
             
         return Response.ok().build();        
     }
@@ -58,8 +57,7 @@ public class ApplicationResource {
     public Response updateApplication(
         @NotNull @QueryParam("region") String region, 
         @NotNull @QueryParam("name") String name, 
-        Application application, 
-        SecurityContext context){
+        Application application){
             
         return Response.ok().build();
     }
@@ -70,8 +68,7 @@ public class ApplicationResource {
     @DELETE
     public Response deleteApplication(
         @NotNull @QueryParam("region") String region, 
-        @NotNull @QueryParam("name") String name, 
-        SecurityContext context){
+        @NotNull @QueryParam("name") String name){
             
         return Response.ok().build();
     }

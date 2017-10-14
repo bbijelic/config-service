@@ -10,6 +10,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,10 +101,7 @@ public class JpaRepository<T> implements Repository<T> {
 			LOGGER.debug("Query returned no results");
 
 		} catch (Throwable t) {
-			// Error occured, rollback transaction
-			entityManager.getTransaction().rollback();
 			LOGGER.error("Getting all entities failed: {}", t.getMessage());
-
 			throw new RepositoryException(t.getMessage(), t);
 		}
 
@@ -119,6 +117,10 @@ public class JpaRepository<T> implements Repository<T> {
 
 			// Persist entity
 			entityManager.persist(entity);
+
+        } catch (ConstraintViolationException cve) {
+            LOGGER.error("Persisting entity failed: {}", cve.getMessage());
+			throw new RepositoryException(cve.getMessage(), cve);
 
 		} catch (Throwable t) {
 		    

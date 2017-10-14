@@ -13,7 +13,7 @@ import javax.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.bbijelic.service.config.model.Region;
+import com.github.bbijelic.service.config.entity.Region;
 
 /**
  * Region repository
@@ -67,7 +67,7 @@ public class RegionRepository extends JpaRepository<Region> {
 
 		} catch (Throwable t) {
 			
-			LOGGER.error("Getting torrent failed: {}", t.toString());
+			LOGGER.error("Getting region failed: {}", t.toString());
 			throw new RepositoryException(t.getMessage(), t);
 		}
 	    

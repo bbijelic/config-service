@@ -1,4 +1,4 @@
-package com.github.bbijelic.service.config.model;
+package com.github.bbijelic.service.config.entity;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -6,14 +6,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 
 /**
- * Environment
+ * Application
  * 
  * @author Bojan Bijelic
  */
-public class Environment {
+public class Application {
     
     /**
-     * Environment name
+     * Application name
      */
     @NotEmpty
     @JsonProperty("name")
@@ -21,7 +21,7 @@ public class Environment {
     
     /**
      * Name getter
-     * @return the Environment name
+     * @return the application name
      */
     public String getName() {
         return name;
@@ -29,7 +29,7 @@ public class Environment {
     
     /**
      * Name setter
-     * @param name the Environment name
+     * @param name the application name
      */
     public void setName(String name) {
         this.name = name;

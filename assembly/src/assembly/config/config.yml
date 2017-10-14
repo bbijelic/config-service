@@ -1,16 +1,17 @@
 # Database configuration
 database:
-  # the name of your JDBC driver
   driverClass: com.mysql.cj.jdbc.Driver
-  # the username
-  user: ${CONFIG_SERVICE_DB_USER:-root}
-  # the password
-  password: ${CONFIG_SERVICE_DB_PASSWORD:-}
-  # the JDBC URL
   url: ${CONFIG_SERVICE_DB_URL:-jdbc:mysql://localhost:3306/db}
-  # any properties specific to your JDBC driver:
+  user: ${CONFIG_SERVICE_DB_USER:-root}
+  password: ${CONFIG_SERVICE_DB_PASSWORD:-}
   properties:
     charSet: UTF-8
+    hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate.hbm2ddl.auto: create-drop
+    hibernate.format_sql: true
+    hibernate.show_sql: true
+  minSize: 5
+  maxSize: 10
 
 # Server configuration
 server:

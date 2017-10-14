@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.bbijelic.service.config.api.rest.RegionResource;
 import com.github.bbijelic.service.config.config.ServiceConfiguration;
-import com.github.bbijelic.service.config.model.Region;
+import com.github.bbijelic.service.config.entity.Region;
 import com.github.bbijelic.service.config.repository.RegionRepository;
 import com.scottescue.dropwizard.entitymanager.EntityManagerBundle;
 

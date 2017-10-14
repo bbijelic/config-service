@@ -16,9 +16,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.SecurityContext;
 
-import com.github.bbijelic.service.config.model.Region;
+import com.github.bbijelic.service.config.entity.Region;
 import com.github.bbijelic.service.config.repository.RegionRepository;
 import com.github.bbijelic.service.config.repository.RepositoryException;
 import com.scottescue.dropwizard.entitymanager.UnitOfWork;
@@ -49,13 +48,14 @@ public class RegionResource {
 
     /**
      * Adds new region
+     * 
+     * @param region the region entity
      */
     @POST
     @UnitOfWork
-    public Response addRegion(
-        @Valid Region region, 
-        SecurityContext context){
+    public Response addRegion(@Valid Region region){
         
+        // Prepare response
         Response response = Response.ok().build();
         
         try {
@@ -78,8 +78,7 @@ public class RegionResource {
     @GET
     @UnitOfWork(transactional = false)
     public Response getRegion(
-        @QueryParam("name") Optional<String> nameOptional, 
-        SecurityContext context){
+        @QueryParam("name") Optional<String> nameOptional){
             
         Response response = Response.ok().build();
         
@@ -123,8 +122,7 @@ public class RegionResource {
     @UnitOfWork
     public Response updateRegion(
         @NotNull @QueryParam("name") String name, 
-        Region region, 
-        SecurityContext context){
+        @Valid Region region){
             
         return Response.ok().build();
     }
@@ -135,8 +133,7 @@ public class RegionResource {
     @DELETE
     @UnitOfWork
     public Response deleteRegion(
-        @NotNull @QueryParam("name") String name, 
-        SecurityContext context){
+        @NotNull @QueryParam("name") String name){
             
         return Response.ok().build();
     }

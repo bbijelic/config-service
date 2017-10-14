@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
-import com.github.bbijelic.service.config.model.Environment;
+import com.github.bbijelic.service.config.entity.Environment;
 
 /**
  * Environment resource
@@ -35,7 +35,7 @@ public class EnvironmentResource {
     public Response addEnvironment(
         @NotNull @QueryParam("region") String region, 
         @NotNull @QueryParam("application") String application, 
-        @Valid Environment environment, SecurityContext context){
+        @Valid Environment environment){
             
         return Response.ok().build();
     }
@@ -47,8 +47,7 @@ public class EnvironmentResource {
     public Response getEnvironment(
         @NotNull @QueryParam("region") String region,
         @NotNull @QueryParam("application") String application, 
-        @QueryParam("name") Optional<String> name, 
-        SecurityContext context){
+        @QueryParam("name") Optional<String> name){
             
         return Response.ok().build();        
     }
@@ -61,8 +60,7 @@ public class EnvironmentResource {
         @NotNull @QueryParam("region") String region, 
         @NotNull @QueryParam("application") String application, 
         @NotNull @QueryParam("name") String name, 
-        Environment environment, 
-        SecurityContext context){
+        Environment environment){
             
         return Response.ok().build();
     }
@@ -74,8 +72,7 @@ public class EnvironmentResource {
     public Response deleteEnvironment(
         @NotNull @QueryParam("region") String region, 
         @NotNull @QueryParam("application") String application, 
-        @NotNull @QueryParam("name") String name, 
-        SecurityContext context){
+        @NotNull @QueryParam("name") String name){
             
         return Response.ok().build();
     }

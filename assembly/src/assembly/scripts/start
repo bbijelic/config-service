@@ -2,7 +2,7 @@
 
 SERVICE_BASE=${path.base}
 SERVICE_PID=${path.base}/run/service.pid
-SERVICE_LOG=${path.base}/logs/service.log
+SERVICE_LOG=${path.base}/logs/service-stdout.log
 SERVICE_JAVA_OPTS="-Djava.security.egd=file:///dev/urandom -Duser.timezone=${service.timezone}"
 
 if [ ! -d $SERVICE_BASE ] ; then
