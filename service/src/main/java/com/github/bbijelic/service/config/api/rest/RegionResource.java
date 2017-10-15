@@ -17,6 +17,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.github.bbijelic.service.config.entity.Region;
 import com.github.bbijelic.service.config.repository.RegionRepository;
 import com.github.bbijelic.service.config.repository.RepositoryException;
@@ -56,7 +58,7 @@ public class RegionResource {
     public Response addRegion(@Valid Region region){
         
         // Prepare response
-        Response response = Response.ok().build();
+        Response response = Response.status(Status.CREATED).build();
         
         try {
             
@@ -77,9 +79,9 @@ public class RegionResource {
      */
     @GET
     @UnitOfWork(transactional = false)
-    public Response getRegion(
-        @QueryParam("name") Optional<String> nameOptional){
+    public Response getRegion(@QueryParam("name") Optional<String> nameOptional){
             
+        // Prepare response
         Response response = Response.ok().build();
         
         try {
@@ -100,6 +102,7 @@ public class RegionResource {
                 }
                 
             } else {
+                
                 // Get all the regions                
                 List<Region> resultList = regionRepository.getAll();
                 // Return it as a entity body
@@ -123,8 +126,38 @@ public class RegionResource {
     public Response updateRegion(
         @NotNull @QueryParam("name") String name, 
         @Valid Region region){
+        
+        // Prepare response
+        Response response = Response.ok().build();
+        
+        try {
             
-        return Response.ok().build();
+            // Find region first
+            Optional<Region> regionOptional = regionRepository.find(name);
+            
+            if(regionOptional.isPresent()){
+                
+                // Update found region with properties from the request
+                Region regionEntity = regionOptional.get();
+                regionEntity.setName(region.getName());
+                regionEntity.setDescription(region.getDescription());
+                
+                // Region successfully updated
+                response = Response.ok(regionEntity).build();
+                
+            } else {
+                
+                // Region not found
+                response = Response.status(Status.NOT_FOUND).build();
+            }
+            
+        } catch (RepositoryException re){
+            
+            // Server error response
+            response = Response.serverError().build();
+        } 
+        
+        return response;
     }
 
     /**
@@ -132,9 +165,36 @@ public class RegionResource {
      */
     @DELETE
     @UnitOfWork
-    public Response deleteRegion(
-        @NotNull @QueryParam("name") String name){
+    public Response deleteRegion(@NotNull @QueryParam("name") String name){
             
-        return Response.ok().build();
+        // Prepare response
+        Response response = Response.noContent().build();
+        
+        try {
+            
+            // Find region first
+            Optional<Region> regionOptional = regionRepository.find(name);
+            
+            if(regionOptional.isPresent()){
+                
+                // Delete the region
+                regionRepository.remove(regionOptional.get());
+                
+                // Region successfully deleted
+                response = Response.noContent().build();
+                
+            } else {
+                
+                // Region not found
+                response = Response.status(Status.NOT_FOUND).build();
+            }
+            
+        } catch (RepositoryException re){
+            
+            // Server error response
+            response = Response.serverError().build();
+        } 
+        
+        return response;
     }
 }
