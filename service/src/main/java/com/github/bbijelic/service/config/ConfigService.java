@@ -16,7 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import com.github.bbijelic.service.config.config.ServiceConfiguration;
 import com.github.bbijelic.service.config.region.api.Region;
-import com.github.bbijelic.service.config.region.bundle.RegionBundle;
+import com.github.bbijelic.service.config.region.repository.RegionRepository;
+import com.github.bbijelic.service.config.region.resources.RegionResource;
 import com.scottescue.dropwizard.entitymanager.EntityManagerBundle;
 
 /**
@@ -67,12 +68,7 @@ public class ConfigService extends Application<ServiceConfiguration> {
             return configuration.getDatabaseConfiguration().getDataSourceFactory();
         }
     };
-    
-    /**
-     * Entity manager
-     */
-    private EntityManager entityManager;
-        
+            
     @Override
     public void initialize(Bootstrap<ServiceConfiguration> bootstrap) {
         // Enable variable substitution with environment variables
@@ -80,19 +76,20 @@ public class ConfigService extends Application<ServiceConfiguration> {
             new SubstitutingSourceProvider(
                 bootstrap.getConfigurationSourceProvider(),
                 new EnvironmentVariableSubstitutor(false)));
-                
-        // Initialize entity manager
-        entityManager = entityManagerBundle.getSharedEntityManager();
-        
+                        
         // Add entity manager bundle
         bootstrap.addBundle(entityManagerBundle);
-
-        // Add region bundle
-        bootstrap.addBundle(new RegionBundle(entityManager));
     }
+    
     
     @Override
     public void run(ServiceConfiguration config, Environment env) throws Exception {
         LOGGER.info("Starting " + getName()); 
+        
+        // Get instance of shared entity manager
+        final EntityManager sharedEntityManager = entityManagerBundle.getSharedEntityManager();
+        
+        // Add region resource to the jersey environment
+        env.jersey().register(new RegionResource(new RegionRepository(Region.class, sharedEntityManager)));
     }
 }

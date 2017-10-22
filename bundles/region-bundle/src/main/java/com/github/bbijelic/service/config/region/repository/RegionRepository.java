@@ -33,7 +33,7 @@ public class RegionRepository extends JpaRepository<Region> {
      * @param type the entity type
      * @param entityManager the entity manager
      */
-    public RegionRepository(Class<Region> type, EntityManager entityManager) {
+    public RegionRepository(Class<Region> type, final EntityManager entityManager) {
         super(type, entityManager);
     }
     
@@ -54,22 +54,14 @@ public class RegionRepository extends JpaRepository<Region> {
 			CriteriaQuery<Region> criteriaQuery = criteriaBuilder.createQuery(Region.class);
 			Root<Region> root = criteriaQuery.from(Region.class);
 			
-			LOGGER.info("XXX");
-			
 			criteriaQuery.select(root);
-			
-			LOGGER.info("XXX");
 
 			ParameterExpression<String> nameParameter = criteriaBuilder.parameter(String.class);
 			criteriaQuery.where(criteriaBuilder.equal(root.get("name"), nameParameter));
 			
-			LOGGER.info("XXX");
-			
 			TypedQuery<Region> query = getEntityManager().createQuery(criteriaQuery);
 			query.setParameter(nameParameter, name);
-			
-			LOGGER.info("XXX");
-			
+
 			result = Optional.ofNullable(query.getSingleResult());
 						
 		} catch (NoResultException nre) {
