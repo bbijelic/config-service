@@ -1,4 +1,4 @@
-package com.github.bbijelic.service.config.repository;
+package com.github.bbijelic.service.config.core.repository;
 
 import java.util.List;
 import java.util.Optional;

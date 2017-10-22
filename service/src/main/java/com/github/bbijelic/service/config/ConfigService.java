@@ -1,5 +1,12 @@
 package com.github.bbijelic.service.config;
 
+import io.dropwizard.Application;
+import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
+import io.dropwizard.configuration.SubstitutingSourceProvider;
+import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
+
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -7,18 +14,10 @@ import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.bbijelic.service.config.api.rest.RegionResource;
 import com.github.bbijelic.service.config.config.ServiceConfiguration;
-import com.github.bbijelic.service.config.entity.Region;
-import com.github.bbijelic.service.config.repository.RegionRepository;
+import com.github.bbijelic.service.config.region.api.Region;
+import com.github.bbijelic.service.config.region.bundle.RegionBundle;
 import com.scottescue.dropwizard.entitymanager.EntityManagerBundle;
-
-import io.dropwizard.Application;
-import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
-import io.dropwizard.configuration.SubstitutingSourceProvider;
-import io.dropwizard.db.DataSourceFactory;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
 
 /**
  * Configuration service main class
@@ -65,9 +64,14 @@ public class ConfigService extends Application<ServiceConfiguration> {
             new EntityManagerBundle<ServiceConfiguration>(Region.class) {
         @Override
         public DataSourceFactory getDataSourceFactory(ServiceConfiguration configuration) {
-            return configuration.getDataSourceFactory();
+            return configuration.getDatabaseConfiguration().getDataSourceFactory();
         }
     };
+    
+    /**
+     * Entity manager
+     */
+    private EntityManager entityManager;
         
     @Override
     public void initialize(Bootstrap<ServiceConfiguration> bootstrap) {
@@ -77,18 +81,18 @@ public class ConfigService extends Application<ServiceConfiguration> {
                 bootstrap.getConfigurationSourceProvider(),
                 new EnvironmentVariableSubstitutor(false)));
                 
-        // Initialize entity manager bundle
+        // Initialize entity manager
+        entityManager = entityManagerBundle.getSharedEntityManager();
+        
+        // Add entity manager bundle
         bootstrap.addBundle(entityManagerBundle);
+
+        // Add region bundle
+        bootstrap.addBundle(new RegionBundle(entityManager));
     }
     
     @Override
     public void run(ServiceConfiguration config, Environment env) throws Exception {
-        LOGGER.info("Starting " + getName());
-        
-        // Entity manager
-        final EntityManager entityManager = entityManagerBundle.getSharedEntityManager();
-        
-        // Register region resource
-        env.jersey().register(new RegionResource(new RegionRepository(Region.class, entityManager)));        
+        LOGGER.info("Starting " + getName()); 
     }
 }

@@ -1,4 +1,4 @@
-package com.github.bbijelic.service.config.repository;
+package com.github.bbijelic.service.config.region.repository;
 
 import java.util.Optional;
 
@@ -13,7 +13,9 @@ import javax.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.bbijelic.service.config.entity.Region;
+import com.github.bbijelic.service.config.core.repository.JpaRepository;
+import com.github.bbijelic.service.config.core.repository.RepositoryException;
+import com.github.bbijelic.service.config.region.api.Region;
 
 /**
  * Region repository
@@ -43,32 +45,40 @@ public class RegionRepository extends JpaRepository<Region> {
 	 * @return the optional of region
 	 * @throws RepositoryException
 	 */
-	public Optional<Region> find(final String name) throws RepositoryException {
+	public Optional<Region> getByName(final String name) throws RepositoryException {
 	    Optional<Region> result = Optional.empty();
-	    
+	    	    
 	    try {
 			
 			CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
 			CriteriaQuery<Region> criteriaQuery = criteriaBuilder.createQuery(Region.class);
 			Root<Region> root = criteriaQuery.from(Region.class);
 			
+			LOGGER.info("XXX");
+			
 			criteriaQuery.select(root);
+			
+			LOGGER.info("XXX");
 
 			ParameterExpression<String> nameParameter = criteriaBuilder.parameter(String.class);
 			criteriaQuery.where(criteriaBuilder.equal(root.get("name"), nameParameter));
 			
+			LOGGER.info("XXX");
+			
 			TypedQuery<Region> query = getEntityManager().createQuery(criteriaQuery);
 			query.setParameter(nameParameter, name);
+			
+			LOGGER.info("XXX");
 			
 			result = Optional.ofNullable(query.getSingleResult());
 						
 		} catch (NoResultException nre) {
 			LOGGER.debug("Query returned no results");
 
-		} catch (Throwable t) {
-			
-			LOGGER.error("Getting region failed: {}", t.toString());
-			throw new RepositoryException(t.getMessage(), t);
+		} catch (Exception e) {
+			LOGGER.error(e.toString());
+			LOGGER.error("Getting region failed: {} -> {}", e.toString(), e.getStackTrace().toString() );
+			throw new RepositoryException(e.getMessage(), e);
 		}
 	    
 	    return result;

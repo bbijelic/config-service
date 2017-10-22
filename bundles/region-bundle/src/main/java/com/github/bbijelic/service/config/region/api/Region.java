@@ -1,4 +1,4 @@
-package com.github.bbijelic.service.config.entity;
+package com.github.bbijelic.service.config.region.api;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

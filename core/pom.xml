@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"   
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0   
+    http://maven.apache.org/xsd/maven-4.0.0.xsd">  
+  
+    <modelVersion>4.0.0</modelVersion>  
+    <parent>
+        <groupId>com.github.bbijelic</groupId>
+        <artifactId>config-service-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    
+    <groupId>com.github.bbijelic</groupId>  
+    <artifactId>config-service-core</artifactId>  
+    <version>1.0.0-SNAPSHOT</version>  
+    <packaging>jar</packaging>
+    
+    <name>Config Service : Core</name>
+	<description>Config service core module</description>
+    
+    <properties>
+        <!-- Library versions -->
+        <version.dropwizard>1.2.0</version.dropwizard>
+        <version.mysql>6.0.6</version.mysql>
+        <version.dropwizard.entitymanager>1.0.0-1</version.dropwizard.entitymanager>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-core</artifactId>
+            <version>${version.dropwizard}</version>
+        </dependency>
+        
+        <dependency>
+	        <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${version.mysql}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.scottescue</groupId>
+            <artifactId>dropwizard-entitymanager</artifactId>
+            <version>${version.dropwizard.entitymanager}</version>
+        </dependency>
+    </dependencies>
+    
+</project>  
