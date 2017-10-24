@@ -42,10 +42,15 @@ public class RegionRepository extends JpaRepository<Region> {
 	 * 
 	 * @param name
 	 *            the region name
+	 * @param offset the offset
+	 * @param limit the limit
+	 * @param sortBy
 	 * @return the optional of region
 	 * @throws RepositoryException
 	 */
-	public Optional<Region> getByName(final String name) throws RepositoryException {
+	public Optional<Region> getByName(
+        final String name) 
+            throws RepositoryException {
 	    Optional<Region> result = Optional.empty();
 	    	    
 	    try {
@@ -58,10 +63,10 @@ public class RegionRepository extends JpaRepository<Region> {
 
 			ParameterExpression<String> nameParameter = criteriaBuilder.parameter(String.class);
 			criteriaQuery.where(criteriaBuilder.equal(root.get("name"), nameParameter));
-			
+		        
 			TypedQuery<Region> query = getEntityManager().createQuery(criteriaQuery);
 			query.setParameter(nameParameter, name);
-
+						
 			result = Optional.ofNullable(query.getSingleResult());
 						
 		} catch (NoResultException nre) {

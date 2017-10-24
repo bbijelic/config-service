@@ -81,11 +81,23 @@ public class RegionResource {
     
     /**
      * Gets one or list of regions
+     * 
+     * @param nameOptional the optional name of region
+     * @param offsetOptional the optional offset for the pagination
+     * @param limitOptional the optional limit for the pagination
+     * @param sortByOptional the optional sort by field
+     * @param sortOrderOptional the optional sort order
+     * 
+     * @return the response
      */
     @GET
     @UnitOfWork(transactional = false)
     public Response getRegion(
-        @QueryParam("name") Optional<String> nameOptional){
+        @QueryParam("name") Optional<String> nameOptional,
+        @QueryParam("offset") Optional<Integer> offsetOptional,
+        @QueryParam("limit") Optional<Integer> limitOptional,
+        @QueryParam("sort_by") Optional<String> sortByOptional,
+        @QueryParam("sort_order") Optional<String> sortOrderOptional){
             
         // Prepare response
         Response response = Response.ok().build();
@@ -93,12 +105,10 @@ public class RegionResource {
         try {
             
             if(nameOptional.isPresent()){
-                
                 // Get single region identified by the name
                 Optional<Region> result = regionRepository.getByName(nameOptional.get());
                 
                 if(result.isPresent()){
-                    
                     // Region found, return it as a entity body
                     response = Response.ok(result.get()).build();
                     
@@ -110,7 +120,12 @@ public class RegionResource {
             } else {
                 
                 // Get all the regions                
-                List<Region> resultList = regionRepository.getAll();
+                List<Region> resultList = regionRepository.getAll(
+                    offsetOptional,
+                    limitOptional,
+                    sortByOptional,
+                    sortOrderOptional
+                );
                 // Return it as a entity body
                 response = Response.ok(resultList).build();
             }

@@ -81,7 +81,6 @@ public class ConfigService extends Application<ServiceConfiguration> {
         bootstrap.addBundle(entityManagerBundle);
     }
     
-    
     @Override
     public void run(ServiceConfiguration config, Environment env) throws Exception {
         LOGGER.info("Starting " + getName()); 

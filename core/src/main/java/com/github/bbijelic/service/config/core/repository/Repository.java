@@ -23,10 +23,19 @@ public interface Repository<T> {
 	/**
 	 * Gets all entities
 	 * 
+	 * @param offsetOptional the offset optional
+	 * @param limitOptional the limit optional
+	 * @param sortByOptional the sort by optional
+	 * @param sortOrderOptional the sort order optional
+	 * 
 	 * @return the list of entities
 	 * @throws JpaException
 	 */
-	public List<T> getAll() throws RepositoryException;
+	public List<T> getAll(
+        final Optional<Integer> offsetOptional, 
+        final Optional<Integer> limitOptional, 
+        final Optional<String> sortByOptional, 
+        final Optional<String> sortOrderOptional) throws RepositoryException;
 
 	/**
 	 * Persists the entity by merging
