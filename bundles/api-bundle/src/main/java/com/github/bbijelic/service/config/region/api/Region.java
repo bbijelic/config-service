@@ -1,10 +1,14 @@
 package com.github.bbijelic.service.config.region.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -12,6 +16,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.bbijelic.service.config.application.api.Application;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
@@ -99,6 +104,9 @@ public class Region {
     public void setDescription(String description) {
         this.description = description;
     }
+    
+    @ManyToMany(mappedBy = "regions", fetch=)
+    private List<Application> applications = new ArrayList<Application>();
     
     @Override
     public int hashCode() {

@@ -14,6 +14,8 @@ import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.bbijelic.service.config.application.repository.ApplicationRepository;
+import com.github.bbijelic.service.config.application.resources.ApplicationResource;
 import com.github.bbijelic.service.config.config.ServiceConfiguration;
 import com.github.bbijelic.service.config.region.api.Region;
 import com.github.bbijelic.service.config.region.repository.RegionRepository;
@@ -62,7 +64,8 @@ public class ConfigService extends Application<ServiceConfiguration> {
      * Entity Manager Bundle
      */
     private final EntityManagerBundle<ServiceConfiguration> entityManagerBundle = 
-            new EntityManagerBundle<ServiceConfiguration>(Region.class) {
+            new EntityManagerBundle<ServiceConfiguration>(
+                Region.class, com.github.bbijelic.service.config.application.api.Application.class) {
         @Override
         public DataSourceFactory getDataSourceFactory(ServiceConfiguration configuration) {
             return configuration.getDatabaseConfiguration().getDataSourceFactory();
@@ -88,7 +91,14 @@ public class ConfigService extends Application<ServiceConfiguration> {
         // Get instance of shared entity manager
         final EntityManager sharedEntityManager = entityManagerBundle.getSharedEntityManager();
         
+        // Region repository instance
+        final RegionRepository regionRepository = new RegionRepository(Region.class, sharedEntityManager);
+        // Application repository instance
+        final ApplicationRepository applicationRepository = new ApplicationRepository(
+            com.github.bbijelic.service.config.application.api.Application.class, sharedEntityManager);
+        
         // Add region resource to the jersey environment
-        env.jersey().register(new RegionResource(new RegionRepository(Region.class, sharedEntityManager)));
+        env.jersey().register(new RegionResource(regionRepository));
+        env.jersey().register(new ApplicationResource(applicationRepository, regionRepository));
     }
 }

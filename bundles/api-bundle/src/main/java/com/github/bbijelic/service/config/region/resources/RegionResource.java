@@ -64,14 +64,11 @@ public class RegionResource {
         Response response = Response.status(Status.CREATED).build();
         
         try {
-                
             // Persist region
             regionRepository.persist(region);
             
         } catch (RepositoryException re){
-            
             LOGGER.error(re.getMessage(), re.toString());
-            
             // Server error response
             response = Response.serverError().build();
         }   
@@ -133,7 +130,6 @@ public class RegionResource {
         } catch (RepositoryException re){
             
             LOGGER.error(re.getMessage(), re.toString());
-            
             // Server error response
             response = Response.serverError().build();
         }   
@@ -165,9 +161,6 @@ public class RegionResource {
                 regionEntity.setName(region.getName());
                 regionEntity.setDescription(region.getDescription());
                 
-                // Region successfully updated
-                response = Response.ok(regionEntity).build();
-                
             } else {
                 
                 // Region not found
@@ -177,7 +170,6 @@ public class RegionResource {
         } catch (RepositoryException re){
             
             LOGGER.error(re.getMessage(), re.toString());
-            
             // Server error response
             response = Response.serverError().build();
         } 
@@ -201,15 +193,12 @@ public class RegionResource {
             Optional<Region> regionOptional = regionRepository.getByName(name);
             
             if(regionOptional.isPresent()){
-                
                 // Delete the region
                 regionRepository.remove(regionOptional.get());
-                
                 // Region successfully deleted
                 response = Response.noContent().build();
                 
             } else {
-                
                 // Region not found
                 response = Response.status(Status.NOT_FOUND).build();
             }
@@ -217,7 +206,6 @@ public class RegionResource {
         } catch (RepositoryException re){
             
             LOGGER.error(re.getMessage(), re.toString());
-            
             // Server error response
             response = Response.serverError().build();
         } 

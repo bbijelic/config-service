@@ -19,7 +19,7 @@
 	<description>Config service bundles module</description>
 	
     <modules>
-        <module>region-bundle</module>
+        <module>api-bundle</module>
     </modules>
     
 </project>  
