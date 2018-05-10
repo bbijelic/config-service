@@ -1,27 +1,32 @@
 # Database configuration
 database:
   datasource:
-    driverClass: com.mysql.cj.jdbc.Driver
-    url: ${CONFIG_SERVICE_DB_URL:-jdbc:mysql://localhost:3306/db}
-    user: ${CONFIG_SERVICE_DB_USER:-root}
-    password: ${CONFIG_SERVICE_DB_PASSWORD:-}
+    driverClass: ${db.driver.class}
+    url: jdbc:postgresql://${CONFIG_SERVICE_DB_HOSTNAME:-localhost}:${CONFIG_SERVICE_DB_PORT:-3306}/${CONFIG_SERVICE_DB_NAME:-db}?reWriteBatchedInserts=true
+    user: ${CONFIG_SERVICE_DB_USER:-user}
+    password: ${CONFIG_SERVICE_DB_PASSWORD:-user}
     properties:
-      charSet: UTF-8
-      hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-      hibernate.hbm2ddl.auto: create-drop
-      hibernate.format_sql: true
-      hibernate.show_sql: true
-    minSize: 5
-    maxSize: 10
+      charSet: ${db.charset}
+      hibernate.dialect: ${db.hibernate.dialect}
+      hibernate.hbm2ddl.auto: ${db.hibernate.hbm2ddl.auto}
+      hibernate.format_sql: ${db.hibernate.sql.format}
+      hibernate.show_sql: ${db.hibernate.sql.show}
+      hibernate.generate_statistics: ${db.hibernate.statistics.generate}
+      hibernate.connection.autocommit: ${db.hibernate.connection.autocommit}
+      hibernate.jdbc.batch_size: ${db.hibernate.batch.size}
+      hibernate.order_inserts: ${db.hibernate.order.inserts}
+      hibernate.order_updates: ${db.hibernate.order.updates}
+    minSize: ${db.pool.min}
+    maxSize: ${db.pool.max}
 
 # Server configuration
 server:
   applicationConnectors:
   - type: http
-    port: ${CONFIG_SERVICE_API_PORT:-10443}
+    port: ${CONFIG_SERVICE_API_PORT:-8080}
   adminConnectors:
   - type: http
-    port: ${CONFIG_SERVICE_ADMIN_PORT:-11443}
+    port: ${CONFIG_SERVICE_ADMIN_PORT:-8090}
   requestLog:
     appenders:
       - type: file

@@ -21,7 +21,7 @@
     <properties>
         <!-- Library versions -->
         <version.dropwizard>1.2.0</version.dropwizard>
-        <version.mysql>6.0.6</version.mysql>
+        <version.postgres.jdbc>42.2.2</version.postgres.jdbc>
         <version.dropwizard.entitymanager>1.0.0-1</version.dropwizard.entitymanager>
     </properties>
     
@@ -31,11 +31,11 @@
             <artifactId>dropwizard-core</artifactId>
             <version>${version.dropwizard}</version>
         </dependency>
-        
+
         <dependency>
-	        <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${version.mysql}</version>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${version.postgres.jdbc}</version>
         </dependency>
         <dependency>
             <groupId>com.scottescue</groupId>

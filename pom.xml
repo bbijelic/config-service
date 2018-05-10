@@ -40,7 +40,22 @@
                 <logging.request.archive>true</logging.request.archive>
                 <logging.request.archive.filecount>5</logging.request.archive.filecount>
                 <logging.request.timezone>UTC</logging.request.timezone>
-			
+
+				<!-- Database properties -->
+				<db.driver.class>org.postgresql.Driver</db.driver.class>
+				<db.hibernate.dialect>org.hibernate.dialect.PostgreSQL95Dialect</db.hibernate.dialect>
+				<db.hibernate.hbm2ddl.auto>create</db.hibernate.hbm2ddl.auto>
+				<db.hibernate.sql.format>false</db.hibernate.sql.format>
+				<db.hibernate.sql.show>false</db.hibernate.sql.show>
+                <db.hibernate.statistics.generate>false</db.hibernate.statistics.generate>
+                <db.hibernate.connection.autocommit>false</db.hibernate.connection.autocommit>
+                <db.hibernate.batch.size>8</db.hibernate.batch.size>
+                <db.hibernate.order.inserts>true</db.hibernate.order.inserts>
+                <db.hibernate.order.updates>true</db.hibernate.order.updates>
+                <db.charset>UTF-8</db.charset>
+                <db.pool.min>2</db.pool.min>
+                <db.pool.max>10</db.pool.max>
+
 			</properties>
 	   </profile>
 	   <!-- Profile for the Docker image -->

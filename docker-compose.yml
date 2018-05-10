@@ -1,0 +1,30 @@
+version: '3'
+services:
+
+  config-service:
+    container_name: config-service
+    image: config-service
+    build: .
+    ports:
+      - "8080:8080"
+      - "8090:8090"
+    environment:
+      CONFIG_SERVICE_DB_HOSTNAME: postgres-config-service
+      CONFIG_SERVICE_DB_PORT: 5432
+      CONFIG_SERVICE_DB_USER: user
+      CONFIG_SERVICE_DB_PASSWORD: user
+      CONFIG_SERVICE_DB_NAME: config-server
+      CONFIG_SERVICE_API_PORT: 8080
+      CONFIG_SERVICE_ADMIN_PORT: 8090
+    depends_on:
+      - postgres-config-service
+
+  postgres-config-service:
+      container_name: postgres-config-service
+      image: postgres:10.3-alpine
+      ports:
+        - "5432:5432"
+      environment:
+        POSTGRES_USER: user
+        POSTGRES_PASSWORD: user
+        POSTGRES_DB: config-server
