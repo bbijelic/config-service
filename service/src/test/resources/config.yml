@@ -1,0 +1,39 @@
+# Database configuration
+database:
+  datasource:
+    driverClass: ${db.driver.class}
+    url: jdbc:h2:mem:configdb;DB_CLOSE_DELAY=-1
+    user: ${CONFIG_SERVICE_DB_USER:-user}
+    password: ${CONFIG_SERVICE_DB_PASSWORD:-user}
+    properties:
+      charSet: ${db.charset}
+      hibernate.dialect: ${db.hibernate.dialect}
+      hibernate.hbm2ddl.auto: ${db.hibernate.hbm2ddl.auto}
+      hibernate.format_sql: ${db.hibernate.sql.format}
+      hibernate.show_sql: ${db.hibernate.sql.show}
+      hibernate.generate_statistics: ${db.hibernate.statistics.generate}
+      hibernate.connection.autocommit: ${db.hibernate.connection.autocommit}
+      hibernate.jdbc.batch_size: ${db.hibernate.batch.size}
+      hibernate.order_inserts: ${db.hibernate.order.inserts}
+      hibernate.order_updates: ${db.hibernate.order.updates}
+    minSize: 2
+    maxSize: 10
+
+# Server configuration
+server:
+  applicationConnectors:
+  - type: http
+    port: ${CONFIG_SERVICE_API_PORT:-10080}
+  adminConnectors:
+  - type: http
+    port: ${CONFIG_SERVICE_ADMIN_PORT:-10090}
+
+# Logging configuration
+logging:
+  level: ${logging.level}
+  appenders:
+    - type: console
+      threshold: ${logging.level}
+      timeZone: ${logging.timezone}
+      target: stdout
+      logFormat: "${logging.pattern}"

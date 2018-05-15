@@ -23,12 +23,19 @@
         <version.dropwizard>1.2.0</version.dropwizard>
         <version.postgres.jdbc>42.2.2</version.postgres.jdbc>
         <version.dropwizard.entitymanager>1.0.0-1</version.dropwizard.entitymanager>
+        <version.jaxb.api>2.3.0</version.jaxb.api>
+        <version.javax.version.datasource>1.1.1</version.javax.version.datasource>
     </properties>
     
     <dependencies>
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
+            <version>${version.dropwizard}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-testing</artifactId>
             <version>${version.dropwizard}</version>
         </dependency>
 
@@ -42,6 +49,17 @@
             <artifactId>dropwizard-entitymanager</artifactId>
             <version>${version.dropwizard.entitymanager}</version>
         </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${version.jaxb.api}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>${version.javax.version.datasource}</version>
+        </dependency>
+
     </dependencies>
     
 </project>  

@@ -1,4 +1,4 @@
-package com.github.bbijelic.service.config.region.api;
+package com.github.bbijelic.service.config.environment.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,21 +9,19 @@ import org.hibernate.validator.constraints.NotEmpty;
 import javax.persistence.*;
 
 /**
- * Region
- *
- * @author Bojan Bijelic
+ * Environment
  */
 @Entity
-@Table(name = "config_region", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"name"}, name = "config_region_name_unique")})
-public class Region {
+@Table(name = "config_environment", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name"}, name = "config_environment_name_unique")})
+public class Environment {
 
     /**
      * ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "config_region_sequence_generator")
-    @SequenceGenerator(name = "config_region_sequence_generator", sequenceName = "config_region_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "config_environment_sequence_generator")
+    @SequenceGenerator(name = "config_environment_sequence_generator", sequenceName = "config_environment_seq")
     @Column(name = "id")
     @JsonIgnore
     private long id;
@@ -104,7 +102,7 @@ public class Region {
 
     @Override
     public boolean equals(Object obj){
-        return Objects.equal(obj, obj);
+        return Objects.equal(obj, this);
     }
 
     @Override
@@ -115,4 +113,6 @@ public class Region {
                 .add("description", description)
                 .toString();
     }
+
+
 }

@@ -30,7 +30,7 @@ import com.scottescue.dropwizard.entitymanager.UnitOfWork;
  * 
  * @author Bojan Bijelic
  */
-@Path("/regions")
+@Path("/region")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class RegionResource {
@@ -58,12 +58,13 @@ public class RegionResource {
      */
     @POST
     @UnitOfWork
-    public Response addRegion(@Valid Region region){
+    public Response addRegion(@Valid final Region region){
         
         // Prepare response
         Response response = Response.status(Status.CREATED).build();
         
         try {
+
             // Persist region
             regionRepository.persist(region);
             

@@ -1,29 +1,26 @@
-package com.github.bbijelic.service.config.region.api;
+package com.github.bbijelic.service.config.configuration.file.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import java.util.Calendar;
 
 /**
- * Region
- *
- * @author Bojan Bijelic
+ * File configuration
  */
 @Entity
-@Table(name = "config_region", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"name"}, name = "config_region_name_unique")})
-public class Region {
+@Table(name = "config_file_configuration")
+public class FileConfiguration {
 
     /**
      * ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "config_region_sequence_generator")
-    @SequenceGenerator(name = "config_region_sequence_generator", sequenceName = "config_region_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "config_file_config_sequence_generator")
+    @SequenceGenerator(name = "config_file_config_sequence_generator", sequenceName = "config_file_config_seq")
     @Column(name = "id")
     @JsonIgnore
     private long id;
@@ -47,7 +44,23 @@ public class Region {
     }
 
     /**
-     * Region name
+     * Timestamp
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "timestamp", insertable = true, nullable = false, updatable = false)
+    private Calendar timestamp;
+
+    /**
+     * Timestamp getter
+     *
+     * @return the timestamp
+     */
+    public Calendar getTimestamp(){
+        return timestamp;
+    }
+
+    /**
+     * Name
      */
     @NotEmpty
     @JsonProperty("name")
@@ -57,7 +70,7 @@ public class Region {
     /**
      * Name getter
      *
-     * @return the region name
+     * @return the name
      */
     public String getName(){
         return name;
@@ -66,7 +79,7 @@ public class Region {
     /**
      * Region setter
      *
-     * @param name the region name
+     * @param name the name
      */
     public void setName(String name){
         this.name = name;
@@ -97,20 +110,37 @@ public class Region {
         this.description = description;
     }
 
-    @Override
-    public int hashCode(){
-        return Objects.hashCode(id, name, description);
+    /**
+     * Content
+     */
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "content", insertable = true, nullable = false, updatable = false)
+    private byte[] content;
+
+    /**
+     * Content getter
+     *
+     * @return the content bytes
+     */
+    public byte[] getContent(){
+        return content;
     }
 
-    @Override
-    public boolean equals(Object obj){
-        return Objects.equal(obj, obj);
+    /**
+     * Content setter
+     *
+     * @param content the content
+     */
+    public void setContent(byte[] content){
+        this.content = content;
     }
 
     @Override
     public String toString(){
         return MoreObjects.toStringHelper(this)
                 .add("id", id)
+                .add("timestamp", timestamp.toInstant().toString())
                 .add("name", name)
                 .add("description", description)
                 .toString();

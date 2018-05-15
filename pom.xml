@@ -1,52 +1,52 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"   
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0   
-    http://maven.apache.org/xsd/maven-4.0.0.xsd">  
-  
-    <modelVersion>4.0.0</modelVersion>  
-    <groupId>com.github.bbijelic</groupId>  
-    <artifactId>config-service-parent</artifactId>  
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+    http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.github.bbijelic</groupId>
+    <artifactId>config-service-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    
+
     <name>Config Service</name>
-	<description>Configuration Service</description>
-    
+    <description>Configuration Service</description>
+
     <profiles>
         <!-- Base development profile -->
         <profile>
             <id>base</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
-			</activation>
-			
-			<properties>
-			    <!-- Base path -->
-			    <path.base>${project.build.directory}/service/service</path.base>
-							
+            </activation>
+
+            <properties>
+                <!-- Base path -->
+                <path.base>${project.build.directory}/service/service</path.base>
+
                 <!-- Service properties -->
                 <service.timezone>UTC</service.timezone>
                 <service.main.class>com.github.bbijelic.service.config.ConfigService</service.main.class>
-                                		
+
                 <!-- Logging -->
                 <logging.level>DEBUG</logging.level>
                 <logging.archive>true</logging.archive>
                 <logging.archive.filecount>5</logging.archive.filecount>
                 <logging.timezone>UTC</logging.timezone>
                 <logging.pattern>%d{HH:mm:ss.SSS} [%thread] %-5level [%X{txid}] %logger{35} - %msg%n</logging.pattern>
-                
+
                 <!-- Request Logging -->
                 <logging.request.threshold>TRACE</logging.request.threshold>
                 <logging.request.archive>true</logging.request.archive>
                 <logging.request.archive.filecount>5</logging.request.archive.filecount>
                 <logging.request.timezone>UTC</logging.request.timezone>
 
-				<!-- Database properties -->
-				<db.driver.class>org.postgresql.Driver</db.driver.class>
-				<db.hibernate.dialect>org.hibernate.dialect.PostgreSQL95Dialect</db.hibernate.dialect>
-				<db.hibernate.hbm2ddl.auto>create</db.hibernate.hbm2ddl.auto>
-				<db.hibernate.sql.format>false</db.hibernate.sql.format>
-				<db.hibernate.sql.show>false</db.hibernate.sql.show>
+                <!-- Database properties -->
+                <db.driver.class>org.postgresql.Driver</db.driver.class>
+                <db.hibernate.dialect>org.hibernate.dialect.PostgreSQL95Dialect</db.hibernate.dialect>
+                <db.hibernate.hbm2ddl.auto>create</db.hibernate.hbm2ddl.auto>
+                <db.hibernate.sql.format>false</db.hibernate.sql.format>
+                <db.hibernate.sql.show>false</db.hibernate.sql.show>
                 <db.hibernate.statistics.generate>false</db.hibernate.statistics.generate>
                 <db.hibernate.connection.autocommit>false</db.hibernate.connection.autocommit>
                 <db.hibernate.batch.size>8</db.hibernate.batch.size>
@@ -56,69 +56,122 @@
                 <db.pool.min>2</db.pool.min>
                 <db.pool.max>10</db.pool.max>
 
-			</properties>
-	   </profile>
-	   <!-- Profile for the Docker image -->
-	   <profile>
+            </properties>
+        </profile>
+        <!-- Profile for the Docker image -->
+        <profile>
             <id>docker</id>
-			
-			<properties>
-			    <!-- Base path --> 
-			    <path.base>/app</path.base>                                		
-                
+
+            <properties>
+                <!-- Base path -->
+                <path.base>/app</path.base>
+
                 <!-- Logging -->
                 <logging.level>INFO</logging.level>
-                
+
                 <!-- Request Logging -->
                 <logging.request.threshold>INFO</logging.request.threshold>
-			
-			</properties>
-	   </profile>
-	</profiles>
-	
-	<properties>
+
+            </properties>
+        </profile>
+        <!-- Integration profile -->
+        <profile>
+            <id>integration</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <properties>
+                <!-- Base path -->
+                <path.base>${project.build.directory}/service/service</path.base>
+
+                <!-- Service properties -->
+                <service.timezone>UTC</service.timezone>
+                <service.main.class>com.github.bbijelic.service.config.ConfigService</service.main.class>
+
+                <!-- Logging -->
+                <logging.level>INFO</logging.level>
+                <logging.archive>false</logging.archive>
+                <logging.archive.filecount>5</logging.archive.filecount>
+                <logging.timezone>UTC</logging.timezone>
+                <logging.pattern>%d{HH:mm:ss.SSS} [%thread] %-5level [%X{txid}] %logger{35} - %msg%n</logging.pattern>
+
+                <!-- Request Logging -->
+                <logging.request.threshold>INFO</logging.request.threshold>
+                <logging.request.archive>false</logging.request.archive>
+                <logging.request.archive.filecount>5</logging.request.archive.filecount>
+                <logging.request.timezone>UTC</logging.request.timezone>
+
+                <!-- Database properties -->
+                <db.driver.class>org.h2.Driver</db.driver.class>
+                <db.hibernate.dialect>org.hibernate.dialect.H2Dialect</db.hibernate.dialect>
+                <db.hibernate.hbm2ddl.auto>create-drop</db.hibernate.hbm2ddl.auto>
+                <db.hibernate.sql.format>false</db.hibernate.sql.format>
+                <db.hibernate.sql.show>false</db.hibernate.sql.show>
+                <db.hibernate.statistics.generate>false</db.hibernate.statistics.generate>
+                <db.hibernate.connection.autocommit>false</db.hibernate.connection.autocommit>
+                <db.hibernate.batch.size>8</db.hibernate.batch.size>
+                <db.hibernate.order.inserts>true</db.hibernate.order.inserts>
+                <db.hibernate.order.updates>true</db.hibernate.order.updates>
+                <db.charset>UTF-8</db.charset>
+                <db.pool.min>2</db.pool.min>
+                <db.pool.max>10</db.pool.max>
+                <db.h2.name>config-service-db</db.h2.name>
+
+            </properties>
+        </profile>
+    </profiles>
+
+    <properties>
         <!-- Encoding -->
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	
-		<!-- Java -->
-		<java.source.version>1.8</java.source.version>
-		<java.target.version>1.8</java.target.version>
-			        
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Java -->
+        <java.source.version>1.8</java.source.version>
+        <java.target.version>1.8</java.target.version>
+
         <!-- Plugin versions -->
         <version.plugin.maven.assembly>3.1.0</version.plugin.maven.assembly>
         <version.plugin.maven.compiler>3.7.0</version.plugin.maven.compiler>
-    
+
         <version.junit>5.0.0</version.junit>
-	</properties>
-	
-	<modules>
-	   <module>core</module>
-	   <module>bundles</module>
-	   <module>service</module>
-	   <module>assembly</module>
-	</modules>
-  
+        <version.h2>1.4.194</version.h2>
+    </properties>
+
+    <modules>
+        <module>core</module>
+        <module>bundles</module>
+        <module>service</module>
+        <module>assembly</module>
+    </modules>
+
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <scope>test</scope>
             <version>${version.junit}</version>
+            <scope>test</scope>
         </dependency>
-	</dependencies>
-	
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${version.plugin.maven.compiler}</version>
-				<configuration>
-					<source>${java.source.version}</source>
-					<target>${java.target.version}</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-  
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${version.h2}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${version.plugin.maven.compiler}</version>
+                <configuration>
+                    <source>${java.source.version}</source>
+                    <target>${java.target.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>  

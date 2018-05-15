@@ -42,9 +42,6 @@ public class ApplicationRepository extends JpaRepository<Application> {
 	 * 
 	 * @param name
 	 *            the application name
-	 * @param offset the offset
-	 * @param limit the limit
-	 * @param sortBy
 	 * 
 	 * @return the optional of application
 	 * @throws RepositoryException
@@ -74,8 +71,7 @@ public class ApplicationRepository extends JpaRepository<Application> {
 			LOGGER.debug("Query returned no results");
 
 		} catch (Exception e) {
-			LOGGER.error(e.toString());
-			LOGGER.error("Getting region failed: {} -> {}", e.toString(), e.getStackTrace().toString() );
+			LOGGER.error("Failed to fetch entity: {} -> {}", e.toString(), e.getStackTrace().toString() );
 			throw new RepositoryException(e.getMessage(), e);
 		}
 	    

@@ -1,8 +1,8 @@
-package com.github.bbijelic.service.config.application.resources;
+package com.github.bbijelic.service.config.environment.resources;
 
-import com.github.bbijelic.service.config.application.api.Application;
-import com.github.bbijelic.service.config.application.repository.ApplicationRepository;
 import com.github.bbijelic.service.config.core.repository.RepositoryException;
+import com.github.bbijelic.service.config.environment.api.Environment;
+import com.github.bbijelic.service.config.environment.repository.EnvironmentRepository;
 import com.scottescue.dropwizard.entitymanager.UnitOfWork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,55 +12,59 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Application resource
+ * Environment resource
  *
  * @author Bojan Bijelic
+ * @since 1.0.0
  */
-@Path("/application")
+@Path("/environment")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class ApplicationResource {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationResource.class);
+public class EnvironmentResource {
 
     /**
-     * Applications repository
+     * Logger
      */
-    private ApplicationRepository applicationRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(EnvironmentResource.class);
+
+    /**
+     * Environment repository
+     */
+    private final EnvironmentRepository environmentRepository;
+
 
     /**
      * Constructor
      *
-     * @param applicationRepository the application repository
+     * @param environmentRepository the environment repository
      */
-    public ApplicationResource(
-            final ApplicationRepository applicationRepository){
+    public EnvironmentResource(
+            final EnvironmentRepository environmentRepository){
 
-        this.applicationRepository = applicationRepository;
+        this.environmentRepository = environmentRepository;
     }
 
     /**
-     * Adds new application
+     * Adds new environment
      *
-     * @param application the application entity
+     * @param environment the environment entity
      */
     @POST
     @UnitOfWork
-    public Response addApplication(
-            @Valid Application application){
+    public Response addEnvironment(
+            @Valid Environment environment){
 
         // Prepare response
-        Response response = Response.status(Status.CREATED).build();
+        Response response = Response.status(Response.Status.CREATED).build();
 
         try {
 
             // Persist
-            applicationRepository.persist(application);
+            environmentRepository.persist(environment);
 
         } catch (RepositoryException re) {
             LOGGER.error(re.getMessage(), re.toString());
@@ -72,7 +76,7 @@ public class ApplicationResource {
     }
 
     /**
-     * Gets one or list of applications
+     * Gets one or list of environments
      *
      * @param nameOptional      the optional name
      * @param offsetOptional    the optional offset for the pagination
@@ -83,7 +87,7 @@ public class ApplicationResource {
      */
     @GET
     @UnitOfWork(transactional = false)
-    public Response getApplication(
+    public Response getEnvironment(
             @QueryParam("name") Optional<String> nameOptional,
             @QueryParam("offset") Optional<Integer> offsetOptional,
             @QueryParam("limit") Optional<Integer> limitOptional,
@@ -96,22 +100,22 @@ public class ApplicationResource {
         try {
 
             if (nameOptional.isPresent()) {
-                // Get single application identified by the name
-                Optional<Application> result = applicationRepository.getByName(nameOptional.get());
+                // Get single environment identified by the name
+                Optional<Environment> result = environmentRepository.getByName(nameOptional.get());
 
                 if (result.isPresent()) {
-                    // Application found, return it as a entity body
+                    // Environment found, return it as a entity body
                     response = Response.ok(result.get()).build();
 
                 } else {
-                    // Application not found, return 404
-                    response = Response.status(Status.NOT_FOUND).build();
+                    // Environment not found, return 404
+                    response = Response.status(Response.Status.NOT_FOUND).build();
                 }
 
             } else {
 
-                // Get all the applications                
-                List<Application> resultList = applicationRepository.getAll(
+                // Get all the environments
+                List<Environment> resultList = environmentRepository.getAll(
                         offsetOptional,
                         limitOptional,
                         sortByOptional,
@@ -133,36 +137,36 @@ public class ApplicationResource {
     }
 
     /**
-     * Updates existing application
+     * Updates existing environment
      *
-     * @param name        the application name
-     * @param application the application entity
+     * @param name        the environment name
+     * @param environment the environment entity
      */
     @PUT
     @UnitOfWork
-    public Response updateApplication(
+    public Response updateEnvironment(
             @NotNull @QueryParam("name") String name,
-            @Valid Application application){
+            @Valid Environment environment){
 
         // Prepare response
         Response response = Response.ok().build();
 
         try {
 
-            // Find application first
-            Optional<Application> applicationOptional = applicationRepository.getByName(name);
+            // Find environment first
+            Optional<Environment> environmentOptional = environmentRepository.getByName(name);
 
-            if (applicationOptional.isPresent()) {
+            if (environmentOptional.isPresent()) {
 
-                // Update found application with properties from the request
-                Application applicationEntity = applicationOptional.get();
-                applicationEntity.setName(application.getName());
-                applicationEntity.setDescription(application.getDescription());
+                // Update found environment with properties from the request
+                Environment environmentEntity = environmentOptional.get();
+                environmentEntity.setName(environment.getName());
+                environmentEntity.setDescription(environment.getDescription());
 
             } else {
 
-                // Application not found
-                response = Response.status(Status.NOT_FOUND).build();
+                // Environment not found
+                response = Response.status(Response.Status.NOT_FOUND).build();
             }
 
         } catch (RepositoryException re) {
@@ -176,14 +180,14 @@ public class ApplicationResource {
     }
 
     /**
-     * Deletes existing application
+     * Deletes existing environment
      *
-     * @param name the application name
+     * @param name the environment name
      * @return the response
      */
     @DELETE
     @UnitOfWork
-    public Response deleteApplication(
+    public Response deleteEnvironment(
             @NotNull @QueryParam("name") String name){
 
         // Prepare response
@@ -191,18 +195,18 @@ public class ApplicationResource {
 
         try {
 
-            // Find application first
-            Optional<Application> applicationOptional = applicationRepository.getByName(name);
+            // Find environment first
+            Optional<Environment> environmentOptional = environmentRepository.getByName(name);
 
-            if (applicationOptional.isPresent()) {
+            if (environmentOptional.isPresent()) {
                 // Delete the application
-                applicationRepository.remove(applicationOptional.get());
+                environmentRepository.remove(environmentOptional.get());
                 // Application successfully deleted
                 response = Response.noContent().build();
 
             } else {
-                // Application not found
-                response = Response.status(Status.NOT_FOUND).build();
+                // Environment not found
+                response = Response.status(Response.Status.NOT_FOUND).build();
             }
 
         } catch (RepositoryException re) {
@@ -214,4 +218,5 @@ public class ApplicationResource {
 
         return response;
     }
+
 }

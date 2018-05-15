@@ -1,8 +1,8 @@
-package com.github.bbijelic.service.config.region.repository;
+package com.github.bbijelic.service.config.environment.repository;
 
 import com.github.bbijelic.service.config.core.repository.JpaRepository;
 import com.github.bbijelic.service.config.core.repository.RepositoryException;
-import com.github.bbijelic.service.config.region.api.Region;
+import com.github.bbijelic.service.config.environment.api.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,53 +15,47 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 import java.util.Optional;
 
-/**
- * Region repository
- */
-public class RegionRepository extends JpaRepository<Region> {
+public class EnvironmentRepository extends JpaRepository<Environment> {
 
     /**
      * Logger
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(RegionRepository.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EnvironmentRepository.class);
 
     /**
      * Constructor
      *
-     * @param type          the entity type
+     * @param type          the type
      * @param entityManager the entity manager
      */
-    public RegionRepository(Class<Region> type, final EntityManager entityManager){
+    public EnvironmentRepository(Class<Environment> type, EntityManager entityManager){
         super(type, entityManager);
     }
 
     /**
-     * Find region by name
+     * Find environment by name
      *
-     * @param name   the region name
-     * @param offset the offset
-     * @param limit  the limit
-     * @param sortBy
-     * @return the optional of region
+     * @param name the environment name
+     * @return the optional of environment
      * @throws RepositoryException
      */
-    public Optional<Region> getByName(
+    public Optional<Environment> getByName(
             final String name)
             throws RepositoryException{
-        Optional<Region> result = Optional.empty();
+        Optional<Environment> result = Optional.empty();
 
         try {
 
             CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-            CriteriaQuery<Region> criteriaQuery = criteriaBuilder.createQuery(Region.class);
-            Root<Region> root = criteriaQuery.from(Region.class);
+            CriteriaQuery<Environment> criteriaQuery = criteriaBuilder.createQuery(Environment.class);
+            Root<Environment> root = criteriaQuery.from(Environment.class);
 
             criteriaQuery.select(root);
 
             ParameterExpression<String> nameParameter = criteriaBuilder.parameter(String.class);
             criteriaQuery.where(criteriaBuilder.equal(root.get("name"), nameParameter));
 
-            TypedQuery<Region> query = getEntityManager().createQuery(criteriaQuery);
+            TypedQuery<Environment> query = getEntityManager().createQuery(criteriaQuery);
             query.setParameter(nameParameter, name);
 
             result = Optional.ofNullable(query.getSingleResult());
@@ -76,5 +70,4 @@ public class RegionRepository extends JpaRepository<Region> {
 
         return result;
     }
-
 }
