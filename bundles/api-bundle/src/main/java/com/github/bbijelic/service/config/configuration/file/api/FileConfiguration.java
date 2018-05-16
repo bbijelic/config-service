@@ -2,6 +2,9 @@ package com.github.bbijelic.service.config.configuration.file.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.bbijelic.service.config.application.api.Application;
+import com.github.bbijelic.service.config.environment.api.Environment;
+import com.github.bbijelic.service.config.region.api.Region;
 import com.google.common.base.MoreObjects;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -22,7 +25,6 @@ public class FileConfiguration {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "config_file_config_sequence_generator")
     @SequenceGenerator(name = "config_file_config_sequence_generator", sequenceName = "config_file_config_seq")
     @Column(name = "id")
-    @JsonIgnore
     private long id;
 
     /**
@@ -48,7 +50,7 @@ public class FileConfiguration {
      */
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "timestamp", insertable = true, nullable = false, updatable = false)
-    private Calendar timestamp;
+    private Calendar timestamp = Calendar.getInstance();
 
     /**
      * Timestamp getter
@@ -62,8 +64,6 @@ public class FileConfiguration {
     /**
      * Name
      */
-    @NotEmpty
-    @JsonProperty("name")
     @Column(name = "name", insertable = true, nullable = false, updatable = true)
     private String name;
 
@@ -83,31 +83,6 @@ public class FileConfiguration {
      */
     public void setName(String name){
         this.name = name;
-    }
-
-    /**
-     * Description
-     */
-    @JsonProperty("description")
-    @Column(name = "description", insertable = true, nullable = true, updatable = true)
-    private String description;
-
-    /**
-     * Description getter
-     *
-     * @return the description
-     */
-    public String getDescription(){
-        return description;
-    }
-
-    /**
-     * Description setter
-     *
-     * @param description the description
-     */
-    public void setDescription(String description){
-        this.description = description;
     }
 
     /**
@@ -136,13 +111,86 @@ public class FileConfiguration {
         this.content = content;
     }
 
+    /**
+     * Environment
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(foreignKey = @ForeignKey(name = "config_file_configuration__environment_fk"))
+    private Environment environment;
+
+    /**
+     * Environment getter
+     *
+     * @return the environment
+     */
+    public Environment getEnvironment(){
+        return environment;
+    }
+
+    /**
+     * Environment setter
+     *
+     * @param environment the environment
+     */
+    public void setEnvironment(Environment environment){
+        this.environment = environment;
+    }
+
+    /**
+     * Region
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(foreignKey = @ForeignKey(name = "config_file_configuration__region_fk"))
+    private Region region;
+
+    /**
+     * Region getter
+     *
+     * @return the getter
+     */
+    public Region getRegion(){
+        return region;
+    }
+
+    /**
+     * Region setter
+     *
+     * @param region the region
+     */
+    public void setRegion(Region region){
+        this.region = region;
+    }
+
+    /**
+     * Application
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Application application;
+
+    /**
+     * Application getter
+     *
+     * @return the application
+     */
+    public Application getApplication(){
+        return application;
+    }
+
+    /**
+     * Application setter
+     *
+     * @param application the application
+     */
+    public void setApplication(Application application){
+        this.application = application;
+    }
+
     @Override
     public String toString(){
         return MoreObjects.toStringHelper(this)
                 .add("id", id)
                 .add("timestamp", timestamp.toInstant().toString())
                 .add("name", name)
-                .add("description", description)
                 .toString();
     }
 }

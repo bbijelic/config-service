@@ -12,6 +12,7 @@ import com.github.bbijelic.service.config.region.api.Region;
 import com.github.bbijelic.service.config.region.repository.RegionRepository;
 import com.github.bbijelic.service.config.region.resources.RegionResource;
 import com.scottescue.dropwizard.entitymanager.EntityManagerBundle;
+import com.scottescue.dropwizard.entitymanager.ScanningEntityManagerBundle;
 import io.dropwizard.Application;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
@@ -66,8 +67,7 @@ public class ConfigService extends Application<ServiceConfiguration> {
      * Entity Manager Bundle
      */
     private final EntityManagerBundle<ServiceConfiguration> entityManagerBundle =
-            new EntityManagerBundle<ServiceConfiguration>(
-                    Region.class, com.github.bbijelic.service.config.application.api.Application.class) {
+            new ScanningEntityManagerBundle<ServiceConfiguration>("com.github.bbijelic.service.config") {
                 @Override
                 public DataSourceFactory getDataSourceFactory(ServiceConfiguration configuration){
                     return configuration.getDatabaseConfiguration().getDataSourceFactory();
@@ -112,6 +112,10 @@ public class ConfigService extends Application<ServiceConfiguration> {
         env.jersey().register(new RegionResource(regionRepository));
         env.jersey().register(new ApplicationResource(applicationRepository));
         env.jersey().register(new EnvironmentResource(environmentRepository));
-        env.jersey().register(new FileConfigurationResource(fileConfigurationRepository));
+        env.jersey().register(new FileConfigurationResource(
+                fileConfigurationRepository,
+                applicationRepository,
+                regionRepository,
+                environmentRepository));
     }
 }

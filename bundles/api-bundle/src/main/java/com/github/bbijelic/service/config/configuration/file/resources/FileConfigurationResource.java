@@ -1,19 +1,23 @@
 package com.github.bbijelic.service.config.configuration.file.resources;
 
+import com.github.bbijelic.service.config.application.api.Application;
+import com.github.bbijelic.service.config.application.repository.ApplicationRepository;
 import com.github.bbijelic.service.config.configuration.file.api.FileConfiguration;
 import com.github.bbijelic.service.config.configuration.file.repository.FileConfigurationRepository;
 import com.github.bbijelic.service.config.core.repository.RepositoryException;
+import com.github.bbijelic.service.config.environment.api.Environment;
+import com.github.bbijelic.service.config.environment.repository.EnvironmentRepository;
+import com.github.bbijelic.service.config.region.api.Region;
+import com.github.bbijelic.service.config.region.repository.RegionRepository;
 import com.scottescue.dropwizard.entitymanager.UnitOfWork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.Valid;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Optional;
 
 /**
  * File configuration resource
@@ -37,33 +41,89 @@ public class FileConfigurationResource {
     private final FileConfigurationRepository fileConfigurationRepository;
 
     /**
+     * Application repository
+     */
+    private final ApplicationRepository applicationRepository;
+
+    /**
+     * Region repository
+     */
+    private final RegionRepository regionRepository;
+
+    /**
+     * Environment repository
+     */
+    private final EnvironmentRepository environmentRepository;
+
+    /**
      * Constructor
      *
      * @param fileConfigurationRepository the file configuration repository
+     * @param applicationRepository       the application repository
+     * @param regionRepository            the region repository
+     * @param environmentRepository       the environment repository
      */
     public FileConfigurationResource(
-            final FileConfigurationRepository fileConfigurationRepository){
+            final FileConfigurationRepository fileConfigurationRepository,
+            final ApplicationRepository applicationRepository,
+            final RegionRepository regionRepository,
+            final EnvironmentRepository environmentRepository){
 
         this.fileConfigurationRepository = fileConfigurationRepository;
+        this.applicationRepository = applicationRepository;
+        this.regionRepository = regionRepository;
+        this.environmentRepository = environmentRepository;
     }
 
     /**
      * Adds new file configuration
      *
-     * @param fileConfiguration the file configuration entity
+     * @param application the application
+     * @param environment the environment
+     * @param region      the region
+     * @param name        the configuration file name
+     * @param fileContent the file configuration content
      */
     @POST
     @UnitOfWork
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     public Response addFileConfiguration(
-            @Valid FileConfiguration fileConfiguration){
+            final @NotNull @QueryParam("application") String application,
+            final @NotNull @QueryParam("environment") String environment,
+            final @NotNull @QueryParam("region") String region,
+            final @NotNull @QueryParam("name") String name,
+            final @NotNull byte[] fileContent){
 
         // Prepare response
         Response response = Response.status(Response.Status.CREATED).build();
 
         try {
 
-            // Persist
-            fileConfigurationRepository.persist(fileConfiguration);
+            // Get application by name
+            Optional<Application> applicationOptional = applicationRepository.getByName(application);
+
+            // Get region by name
+            Optional<Region> regionOptional = regionRepository.getByName(region);
+
+            // Get environment by name
+            Optional<Environment> environmentOptional = environmentRepository.getByName(environment);
+
+            if (applicationOptional.isPresent()
+                    && regionOptional.isPresent()
+                    && environmentOptional.isPresent()) {
+
+                // File configuration
+                final FileConfiguration fileConfiguration = new FileConfiguration();
+                fileConfiguration.setName(name);
+                fileConfiguration.setApplication(applicationOptional.get());
+                fileConfiguration.setEnvironment(environmentOptional.get());
+                fileConfiguration.setRegion(regionOptional.get());
+                fileConfiguration.setContent(fileContent);
+
+                // Persist file configuration
+                fileConfigurationRepository.persist(fileConfiguration);
+            }
+
 
         } catch (RepositoryException re) {
             LOGGER.error(re.getMessage(), re.toString());
