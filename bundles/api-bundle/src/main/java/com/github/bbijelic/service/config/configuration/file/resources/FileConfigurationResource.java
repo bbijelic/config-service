@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Base64;
 import java.util.Optional;
 
 /**
@@ -126,6 +127,70 @@ public class FileConfigurationResource {
 
 
         } catch (RepositoryException re) {
+            LOGGER.error(re.getMessage(), re.toString());
+            // Server error response
+            response = Response.serverError().build();
+        }
+
+        return response;
+    }
+
+    /**
+     * Retrieves file configuration
+     *
+     * @param application the application
+     * @param environment the environment
+     * @param region      the region
+     * @param name        the name of the file configuration
+     * @return the file configuration
+     */
+    @GET
+    @UnitOfWork(transactional = false)
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response getFileConfiguration(
+            final @NotNull @QueryParam("application") String application,
+            final @NotNull @QueryParam("environment") String environment,
+            final @NotNull @QueryParam("region") String region,
+            final @NotNull @QueryParam("name") String name){
+
+        // Prepare response
+        Response response = Response.status(Response.Status.NOT_FOUND).build();
+
+        try {
+
+            // Get application
+            final Optional<Application> applicationOptional = applicationRepository.getByName(application);
+
+            // Get environment
+            final Optional<Environment> environmentOptional = environmentRepository.getByName(environment);
+
+            // Get region
+            final Optional<Region> regionOptional = regionRepository.getByName(region);
+
+            if( applicationOptional.isPresent()
+                    || environmentOptional.isPresent()
+                    || regionOptional.isPresent() ){
+
+                // Find exact configuration file
+                final Optional<FileConfiguration> fileConfigurationOptional = fileConfigurationRepository.findExact(
+                        applicationOptional.get(), environmentOptional.get(), regionOptional.get(), name);
+
+                if (fileConfigurationOptional.isPresent()) {
+
+                    // Get file configuration from the optional
+                    final FileConfiguration fileConfiguration = fileConfigurationOptional.get();
+
+                    // Encode configuration to the Base64
+                    final byte[] base64FileConfiguration
+                            = Base64.getEncoder().encode(fileConfiguration.getContent());
+
+                    // Set encoded file content to the response body
+                    response = Response.ok(base64FileConfiguration).build();
+                }
+            }
+
+        } catch (RepositoryException re) {
+
             LOGGER.error(re.getMessage(), re.toString());
             // Server error response
             response = Response.serverError().build();

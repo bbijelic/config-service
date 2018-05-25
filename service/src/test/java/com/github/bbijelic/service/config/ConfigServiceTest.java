@@ -16,11 +16,15 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Base64;
 
+/**
+ * Config Service integration test
+ */
 public class ConfigServiceTest {
 
     @ClassRule
-    public static final DropwizardAppRule<ServiceConfiguration> RULE
+    public static final DropwizardAppRule<ServiceConfiguration> SERVICE_RULE
             = new DropwizardAppRule<ServiceConfiguration>(
             ConfigService.class, ResourceHelpers.resourceFilePath("config.yml"));
 
@@ -30,7 +34,7 @@ public class ConfigServiceTest {
         final Client client = new JerseyClientBuilder().build();
 
         final Response response =
-                client.target(String.format("http://localhost:%d/file-config", RULE.getLocalPort()))
+                client.target(String.format("http://localhost:%d/file-config", SERVICE_RULE.getLocalPort()))
                         .queryParam("name", "config.yml")
                         .queryParam("environment", "dev")
                         .queryParam("region", "EU")
@@ -38,7 +42,7 @@ public class ConfigServiceTest {
                         .request("asd")
                         .get(Response.class);
 
-        Assert.assertEquals(404, response.getStatus());
+        Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
     }
 
     @Test
@@ -54,7 +58,7 @@ public class ConfigServiceTest {
 
         // Create application
         final Response applicationPostResponse =
-                client.target(String.format("http://localhost:%d/application", RULE.getLocalPort()))
+                client.target(String.format("http://localhost:%d/application", SERVICE_RULE.getLocalPort()))
                         .request().post(Entity.entity(application, MediaType.APPLICATION_JSON_TYPE));
 
         Assert.assertEquals(Response.Status.CREATED.getStatusCode(), applicationPostResponse.getStatus());
@@ -66,7 +70,7 @@ public class ConfigServiceTest {
 
         // Create application
         final Response environmentPostResponse =
-                client.target(String.format("http://localhost:%d/environment", RULE.getLocalPort()))
+                client.target(String.format("http://localhost:%d/environment", SERVICE_RULE.getLocalPort()))
                         .request().post(Entity.entity(environment, MediaType.APPLICATION_JSON_TYPE));
 
         Assert.assertEquals(Response.Status.CREATED.getStatusCode(), environmentPostResponse.getStatus());
@@ -78,21 +82,33 @@ public class ConfigServiceTest {
 
         // Create application
         final Response regionPostResponse =
-                client.target(String.format("http://localhost:%d/region", RULE.getLocalPort()))
+                client.target(String.format("http://localhost:%d/region", SERVICE_RULE.getLocalPort()))
                         .request().post(Entity.entity(region, MediaType.APPLICATION_JSON_TYPE));
 
         Assert.assertEquals(Response.Status.CREATED.getStatusCode(), regionPostResponse.getStatus());
 
         // Request
-        Response response =
-                client.target(String.format("http://localhost:%d/file-configuration", RULE.getLocalPort()))
+        final Response response =
+                client.target(String.format("http://localhost:%d/file-configuration", SERVICE_RULE.getLocalPort()))
                         .queryParam("name", "config.yml")
                         .queryParam("environment", environment.getName())
                         .queryParam("region", region.getName())
                         .queryParam("application", application.getName())
-                        .request().post(Entity.entity(BaseEncoding.base64().encode("test".getBytes()), MediaType.APPLICATION_OCTET_STREAM_TYPE));
+                        .request().post(Entity.entity("test".getBytes(), MediaType.APPLICATION_OCTET_STREAM_TYPE));
 
         Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+
+        // Search for submitted configuration
+        final Response findResponse =
+                client.target(String.format("http://localhost:%d/file-configuration", SERVICE_RULE.getLocalPort()))
+                        .queryParam("name", "config.yml")
+                        .queryParam("environment", environment.getName())
+                        .queryParam("region", region.getName())
+                        .queryParam("application", application.getName())
+                        .request().get();
+
+        Assert.assertEquals(Response.Status.OK.getStatusCode(), findResponse.getStatus());
+        Assert.assertEquals("test", new String(Base64.getDecoder().decode(findResponse.readEntity(byte[].class))));
     }
 
 }
