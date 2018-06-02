@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/bbijelic/config-service.svg?branch=master)](https://travis-ci.org/bbijelic/config-service)
+
 Configuration Service
 ===================
 Configuration as a service
