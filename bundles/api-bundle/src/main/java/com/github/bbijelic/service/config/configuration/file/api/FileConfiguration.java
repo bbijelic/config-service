@@ -1,12 +1,9 @@
 package com.github.bbijelic.service.config.configuration.file.api;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.bbijelic.service.config.application.api.Application;
 import com.github.bbijelic.service.config.environment.api.Environment;
 import com.github.bbijelic.service.config.region.api.Region;
 import com.google.common.base.MoreObjects;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import java.util.Calendar;
@@ -15,7 +12,9 @@ import java.util.Calendar;
  * File configuration
  */
 @Entity
-@Table(name = "config_file_configuration")
+@Table(name = "config_file_configuration",
+        uniqueConstraints = @UniqueConstraint(name = "config_file_uq",
+                columnNames = {"name", "environment", "application", "region", "timestamp"}))
 public class FileConfiguration {
 
     /**
@@ -115,7 +114,7 @@ public class FileConfiguration {
      * Environment
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(foreignKey = @ForeignKey(name = "config_file_configuration__environment_fk"))
+    @JoinColumn(name = "environment", foreignKey = @ForeignKey(name = "config_file_configuration__environment_fk"))
     private Environment environment;
 
     /**
@@ -140,7 +139,7 @@ public class FileConfiguration {
      * Region
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(foreignKey = @ForeignKey(name = "config_file_configuration__region_fk"))
+    @JoinColumn(name = "region", foreignKey = @ForeignKey(name = "config_file_configuration__region_fk"))
     private Region region;
 
     /**
@@ -165,6 +164,7 @@ public class FileConfiguration {
      * Application
      */
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "application", foreignKey = @ForeignKey(name = "config_file_configuration__application_fk"))
     private Application application;
 
     /**
