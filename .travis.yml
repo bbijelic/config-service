@@ -4,3 +4,4 @@ jdk:
   - oraclejdk8
   - oraclejdk9
   - openjdk8
+script: mvn resources:testResources clean test -P base integaration
